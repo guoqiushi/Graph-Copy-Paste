@@ -27,7 +27,6 @@ class GraphSAGEEncoder(torch.nn.Module):
         return x
 
 
-from torch_geometric.nn import GATConv
 
 class GATEncoder(torch.nn.Module):
     def __init__(self, in_channels, out_channels):

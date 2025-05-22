@@ -2,7 +2,7 @@
 
 ## Structure
 * utils.py: functions to generate edges and encode features
-* models: GNN models
+* models.py: GNN models
 * train.py: to train the GNN
 * gallery: sample images to form the graph
 ## Pipeline
