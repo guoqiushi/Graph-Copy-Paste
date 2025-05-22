@@ -1,6 +1,6 @@
 from ultralytics import YOLO
 from itertools import combinations
-
+from coco import coco_classes
 
 def detect_objects(image_path, model_path="yolov8n.pt"):
     model = YOLO(model_path)
@@ -30,3 +30,7 @@ def get_all_class_name(result):
 
 def class_to_edge(yolo_res):
     return list(combinations(yolo_res))
+
+def get_class_index_by_class(target):
+    coco_dict = coco_classes
+    return next((k for k, v in coco_dict.items() if v == target), None)
