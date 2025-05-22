@@ -34,3 +34,40 @@ def class_to_edge(yolo_res):
 def get_class_index_by_class(target):
     coco_dict = coco_classes
     return next((k for k, v in coco_dict.items() if v == target), None)
+
+import torch
+from torch_geometric.data import Data
+
+def build_graph_from_edgelist(edge_list, num_node_features=3, node_labels=None):
+    """
+    将边列表 [[a,b], [c,d], ...] 转换为 PyG 的 Data 对象
+
+    参数:
+    - edge_list: list of [source, target] 的边
+    - num_node_features: 每个节点的特征维度（默认为3）
+    - node_labels: 可选，列表或张量，表示每个节点的类别（长度等于节点数）
+
+    返回:
+    - PyG Data 对象（包含 x, edge_index, y）
+    """
+
+    # 构建 edge_index 张量，形状为 [2, num_edges]
+    edge_index = torch.tensor(edge_list, dtype=torch.long).t().contiguous()
+
+    # 推断节点数
+    num_nodes = int(edge_index.max().item()) + 1
+
+    # 构建节点特征（随机）
+    x = torch.randn((num_nodes, num_node_features))
+
+    # 构建标签（如果未提供则默认为全 0）
+    if node_labels is not None:
+        y = torch.tensor(node_labels, dtype=torch.long)
+    else:
+        y = torch.zeros(num_nodes, dtype=torch.long)
+
+    # 构建 Data 对象
+    data = Data(x=x, edge_index=edge_index, y=y)
+
+    return data
+
