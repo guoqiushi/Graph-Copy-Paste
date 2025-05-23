@@ -1,5 +1,6 @@
 from ultralytics import YOLO
 from itertools import combinations
+import numpy as np
 from coco import coco_classes
 import cv2
 import torch
@@ -84,3 +85,23 @@ def encode_image_feature(img_path,class_name):
     h,w,_ = cv2.imread(img_path).shape
     ratio = ((y2-y1)*(x2-x1))/(h*w)
     return [num_target,round(ratio,4),pos_x,pos_y,num_obj]
+
+
+def compute_iou(pred, target, num_classes, ignore_index=255):
+    ious = []
+    pred = pred.view(-1)
+    target = target.view(-1)
+    mask = target != ignore_index
+
+    for cls in range(num_classes):
+        pred_inds = (pred == cls)
+        target_inds = (target == cls)
+        intersection = (pred_inds & target_inds & mask).sum().item()
+        union = (pred_inds | target_inds) & mask
+        union = union.sum().item()
+        if union == 0:
+            ious.append(np.nan)
+        else:
+            ious.append(intersection / union)
+    return ious
+
