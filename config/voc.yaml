@@ -1,0 +1,17 @@
+# config.yaml
+model:
+  name: deeplabv3_resnet50
+  num_classes: 21  # PASCAL VOC 包括背景共21类
+
+training:
+  epochs: 50
+  batch_size: 8
+  lr: 0.001
+  weight_decay: 0.0005
+  device: cuda
+
+dataset:
+  root: ./VOCdevkit/VOC2012
+  year: 2012
+  download: false
+  crop_size: 513

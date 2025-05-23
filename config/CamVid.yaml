@@ -1,0 +1,47 @@
+# camvid_config.yaml
+
+model:
+  name: deeplabv3_resnet50        # 可替换为 unet, pspnet, fcn_resnet50 等
+  num_classes: 12                 # CamVid 通常有 11 类 + 背景
+  pretrained_backbone: true      # 是否使用预训练主干网络
+  backbone: resnet50             # 可换为 resnet101 等
+
+training:
+  epochs: 100
+  batch_size: 4
+  lr: 0.0001
+  weight_decay: 0.0005
+  device: cuda
+  save_dir: ./checkpoints
+  log_interval: 10
+
+optimizer:
+  type: Adam
+  momentum: 0.9
+  lr_scheduler: StepLR
+  step_size: 50
+  gamma: 0.1
+
+dataset:
+  name: camvid
+  root: ./CamVid
+  image_dir: images
+  mask_dir: labels
+  img_suffix: .png
+  label_suffix: .png
+  crop_size: [360, 480]
+  resize: [360, 480]
+  num_workers: 4
+  ignore_index: 255
+  augmentations:
+    horizontal_flip: true
+    random_crop: true
+    random_scale: true
+
+val:
+  batch_size: 2
+  resize: [360, 480]
+
+loss:
+  type: CrossEntropyLoss
+  ignore_index: 255

@@ -1,7 +1,9 @@
 from ultralytics import YOLO
 from itertools import combinations
 from coco import coco_classes
-
+import cv2
+import torch
+from torch_geometric.data import Data
 def detect_objects(image_path, model_path="yolov8n.pt"):
     model = YOLO(model_path)
     results = model(image_path)
@@ -23,10 +25,10 @@ def detect_objects(image_path, model_path="yolov8n.pt"):
 
 
 def get_all_class_name(result):
-    result = []
+    res = []
     for class_name,_ in result.items():
-        result = list(set(result.append(class_name)))
-    return result
+        out = list(set(res.append(class_name)))
+    return out
 
 def class_to_edge(yolo_res):
     return list(combinations(yolo_res))
@@ -35,8 +37,7 @@ def get_class_index_by_class(target):
     coco_dict = coco_classes
     return next((k for k, v in coco_dict.items() if v == target), None)
 
-import torch
-from torch_geometric.data import Data
+
 
 def build_graph_from_edgelist(edge_list, num_node_features=3, node_labels=None):
     """
