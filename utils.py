@@ -71,3 +71,15 @@ def build_graph_from_edgelist(edge_list, num_node_features=3, node_labels=None):
 
     return data
 
+def encode_image_feature(img_path,class_name):
+    res = detect_objects(img_path)
+    if not res.get(class_name):
+        return [0,0,0,0,0]
+    num_target = len(res.get(class_name))
+    x1,y1,x2,y2 = res.get(class_name)[0]
+    pos_x = int((x1+x2)*0.5)
+    pos_y = int((y1+y2)*0.5)
+    num_obj = len(res.keys())
+    h,w,_ = cv2.imread(img_path).shape
+    ratio = ((y2-y1)*(x2-x1))/(h*w)
+    return [num_target,round(ratio,4),pos_x,pos_y,num_obj]
